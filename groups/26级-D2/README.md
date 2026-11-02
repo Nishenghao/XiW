@@ -15,9 +15,9 @@
 ```
 
 ## 后端函数签名  
-def iter_files(root:Path) -> list[Path]  
-def analyze_file(root:Path, file_path:Path) -> dict  
-def build_index(root:Path, paths:list[Path]) -> None  
+def iter_files(root:Path)  ->  list[Path]  
+def analyze_file(root:Path, file_path:Path)  ->  dict  
+def build_index(root:Path, paths:list[Path])  ->  None  
  
 iter_files: 传入一个目标文件夹路径，返回一个列表，储存着目标路径中拥有要求后缀的文件的相对路径。  
 analyze_file: 接收root和一个文件的相对路径，分析文件，返回一个统计字典（若无法访问则返回None）。  
