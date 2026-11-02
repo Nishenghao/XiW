@@ -39,7 +39,7 @@ def analyze_file(root, file_path):
         return None
 
     #通过unicode编码识别汉字
-    text = re.findall(r'[a-zA-Z]+',context) + re.findall(r'[\u4e00-\u9fa5]',context)
+    text = re.findall(r'[a-zA-Z]+',context.lower()) + re.findall(r'[\u4e00-\u9fa5]',context)
     counter = Counter(text)
     text_dic = sorted(counter.items(), key = lambda x:(-x[1], x[0])) #二级排序
 
@@ -61,12 +61,12 @@ def build_index(root,paths):
         if file is not None:
             files.append(file)
 
-    index = {"root": root.as_posix(), "files": files}
+    index = {"root": root.resolve().as_posix(), "files": files}
     with open(INDEX_PATH, "w", encoding="utf-8") as f:
         json.dump(index, f, ensure_ascii=False, indent=2, sort_keys=True)
         f.write("\n")
 
-    print(f"索引了{len(files)}个文件")
+    print(f"索引{len(files)}个文件")
 
     
     
