@@ -16,7 +16,7 @@
 
 ## 后端函数签名
 ```python
-def iter_files(root: Path)                      ->  list[Path]  
+def iter_files(root: Path)                      ->  list[Path]
 def analyze_file(root: Path, file_path: Path)   ->  dict  
 def build_index(root: Path, paths: list[Path])  ->  None  
  
