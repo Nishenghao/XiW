@@ -3,6 +3,9 @@ import sys
 from collections import Counter
 import re
 import json
+INDEX_PATH=Path(__file__).resolve().parent / "index.json"
+
+# ===== 后端区：iter_files / analyze_file / build_index（倪生浩）=====
 
 #传入一个目标路径，返回一个列表，储存着目标路径中拥有要求后缀的文件的相对路径。
 def iter_files(root):
@@ -36,9 +39,9 @@ def analyze_file(root, file_path):
         return None
 
     #通过unicode编码识别汉字
-    text = re.findall(r'\d+',context) + re.findall(r'[a-zA-Z]+',context) + re.findall(r'[\u4e00-\u9fa5]',context)
-    text_dic = Counter(num+alpha+chinese)
-    text_dic = sorted(words.items(), key = lambda x:(-x[1], x[0])) #二级排序
+    text = re.findall(r'[a-zA-Z]+',context) + re.findall(r'[\u4e00-\u9fa5]',context)
+    counter = Counter(text)
+    text_dic = sorted(counter.items(), key = lambda x:(-x[1], x[0])) #二级排序
 
     return {
         "path": file_path,
@@ -62,6 +65,8 @@ def build_index(root,paths):
     with open(INDEX_PATH, "w", encoding="utf-8") as f:
         json.dump(index, f, ensure_ascii=False, indent=2, sort_keys=True)
         f.write("\n")
+
+    print(f"索引了{len(files)}个文件")
 
     
     
