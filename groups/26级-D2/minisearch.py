@@ -68,7 +68,75 @@ def build_index(root,paths):
 
     print(f"索引{len(files)}个文件")
 
-    
+import argparse
+# ===== 前端区：search + main（你的部分）=====
+
+def search(keyword):
+    """读 index.json，统计关键词在每个文件的出现次数，按次数降序输出。"""
+    try:
+        with open(INDEX_PATH, encoding="utf-8") as f:
+            index = json.load(f)
+    except FileNotFoundError:
+        print("还没有索引，请先运行：python minisearch.py index docs/", file=sys.stderr)
+        sys.exit(1)
+
+    root = Path(index["root"])
+    kw = keyword.lower()
+    results = []
+
+    for record in index["files"]:
+        file_path = root / record["path"]
+        try:
+            with open(file_path, encoding="utf-8") as f:
+                lines = f.readlines()
+        except OSError:
+            continue
+
+        count = 0
+        first_line = ""
+        for line in lines:
+            hits = line.lower().count(kw)
+            if hits > 0:
+                count += hits
+                if not first_line:
+                    first_line = line.strip()
+
+        if count > 0:
+            results.append((count, record["path"], first_line))
+
+    results.sort(key=lambda item: (-item[0], item[1]))
+
+    if not results:
+        print(f'没有找到 "{keyword}"')
+        return
+
+    for count, path, first_line in results:
+        print(f"{path}: {count} 次")
+        if first_line:
+            print(f"  首次出现：{first_line}")
+
+
+def main():
+    parser = argparse.ArgumentParser(description="minisearch 极简文档搜索")
+    sub = parser.add_subparsers(dest="command", required=True)
+
+    index_parser = sub.add_parser("index", help="为指定目录建索引")
+    index_parser.add_argument("directory", help="目标目录，如 docs/")
+
+    search_parser = sub.add_parser("search", help="在索引中搜索关键词")
+    search_parser.add_argument("keyword", help="关键词，如 python")
+
+    args = parser.parse_args()
+
+    if args.command == "index":
+        paths = iter_files(args.directory)
+        build_index(args.directory, paths)
+    elif args.command == "search":
+        search(args.keyword)
+
+
+if __name__ == "__main__":
+    main()
     
     
     
