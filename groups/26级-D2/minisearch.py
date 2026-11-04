@@ -1,13 +1,14 @@
-from pathlib import Path
 import sys
-from collections import Counter
 import re
 import json
+import argparse
+from pathlib import Path
+from collections import Counter
 INDEX_PATH=Path(__file__).resolve().parent / "index.json"
 
 # ===== 后端区：iter_files / analyze_file / build_index（倪生浩）=====
 
-#传入一个目标路径，返回一个列表，储存着目标路径中拥有要求后缀的文件的相对路径。
+'''传入一个目标路径，返回一个列表，储存着目标路径中拥有要求后缀的文件的相对路径。'''
 def iter_files(root):
     root = Path(root)
     selects = ['.md', '.txt']   #需要查找的后缀
@@ -18,13 +19,13 @@ def iter_files(root):
         print(f'目录不存在:{root}', file=sys.stderr)
         sys.exit(1)
     
-    for file_paths in root.rglob('*'):
-        if file_paths.suffix.lower() in selects and file_paths.is_file():
-            paths.append(file_paths.relative_to(root).as_posix())
+    for file_path in root.rglob('*'):
+        if file_path.suffix.lower() in selects and file_path.is_file():
+            paths.append(file_path.relative_to(root).as_posix())    #储存相对路径 (root).path:Path -> [paths]  
     
-    return sorted(paths)
+    return sorted(paths)    
 
-#接收root和一个文件的相对路径，分析一个文件，返回一个统计字典（或者None）
+'''接收root和单个文件的相对路径，分析一个文件，返回一个统计字典（或者None）'''
 def analyze_file(root, file_path):
     root = Path(root)
     
@@ -51,7 +52,7 @@ def analyze_file(root, file_path):
         "top_words": [list(i) for i in text_dic[:5]]
     }
 
-#接受root和包含所有相对路径的列表，写入index.json
+'''接受root和包含所有相对路径的列表，写入index.json'''
 def build_index(root,paths):
     root = Path(root)
 
@@ -68,8 +69,7 @@ def build_index(root,paths):
 
     print(f"索引{len(files)}个文件")
 
-import argparse
-# ===== 前端区：search + main（你的部分）=====
+# ===== 前端区：search + main（李科学）=====
 
 def search(keyword):
     """读 index.json，统计关键词在每个文件的出现次数，按次数降序输出。"""
