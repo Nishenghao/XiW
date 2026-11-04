@@ -11,6 +11,8 @@
 │       └── b.txt
 ├── index.json          # 生成的索引文件
 ├── minisearch.py       # 主程序（建索引 + 搜索）
+├── scope.md
+├── tests.md
 └── README.md
 ```
 
