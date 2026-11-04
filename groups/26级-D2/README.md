@@ -1,3 +1,19 @@
+- 支持在任意位置对任意文件夹进行调用，但生成的index.json保存在和程序的同一个文件下。
+
+## 项目结构
+```
+26级-D2/
+├── docs/               # 待索引的文档目录
+│   ├── a.md
+│   ├── cn.md
+│   ├── empty.md
+│   └── sub/
+│       └── b.txt
+├── index.json          # 生成的索引文件
+├── minisearch.py       # 主程序（建索引 + 搜索）
+└── README.md
+```
+
 ## index.json字段要求:
 ```json
 {
