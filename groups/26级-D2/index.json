@@ -1,0 +1,72 @@
+{
+  "files": [
+    {
+      "chars": 18,
+      "lines": 1,
+      "path": "a.md",
+      "top_words": [
+        [
+          "file",
+          1
+        ],
+        [
+          "index",
+          1
+        ],
+        [
+          "python",
+          1
+        ]
+      ],
+      "words": 3
+    },
+    {
+      "chars": 7,
+      "lines": 1,
+      "path": "cn.md",
+      "top_words": [
+        [
+          "引",
+          1
+        ],
+        [
+          "是",
+          1
+        ],
+        [
+          "测",
+          1
+        ],
+        [
+          "索",
+          1
+        ],
+        [
+          "试",
+          1
+        ]
+      ],
+      "words": 6
+    },
+    {
+      "chars": 0,
+      "lines": 0,
+      "path": "empty.md",
+      "top_words": [],
+      "words": 0
+    },
+    {
+      "chars": 21,
+      "lines": 3,
+      "path": "sub/b.txt",
+      "top_words": [
+        [
+          "python",
+          3
+        ]
+      ],
+      "words": 3
+    }
+  ],
+  "root": "C:/Users/NiShh/Desktop/XiW/groups/26级-D2/docs"
+}
