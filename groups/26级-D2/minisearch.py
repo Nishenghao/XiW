@@ -26,7 +26,7 @@ def iter_files(root):
     return sorted(paths)    
 
 '''接收root和单个文件的相对路径，分析一个文件，返回一个统计字典（或者None）'''
-def analyze_file(root, file_path):
+def analyze_file(root,top, file_path):
     root = Path(root)
     
     try:    #通过以utf-8打开文件判断格式
@@ -49,16 +49,16 @@ def analyze_file(root, file_path):
         "lines": len(context.splitlines()),
         "words": len(text),
         "chars": len(context),
-        "top_words": [list(i) for i in text_dic[:5]]
+        "top_words": [list(i) for i in text_dic[:top]]
     }
 
 '''接受root和包含所有相对路径的列表，写入index.json'''
-def build_index(root,paths):
+def build_index(root,top,js,paths):
     root = Path(root)
 
     files = []  #储存所有文件的file
     for file_path in paths:
-        file = analyze_file(root, file_path)
+        file = analyze_file(root,top, file_path)
         if file is not None:
             files.append(file)
 
@@ -67,7 +67,10 @@ def build_index(root,paths):
         json.dump(index, f, ensure_ascii=False, indent=2, sort_keys=True)
         f.write("\n")
 
-    print(f"索引{len(files)}个文件")
+    if js:
+        print(json.dumps(index,ensure_ascii=False, indent=2, sort_keys=True))
+    else:
+        print(f"索引 {len(files)} 个文件")
 
 # ===== 前端区：search + main（李科学）=====
 
@@ -94,12 +97,13 @@ def search(keyword):
 
         count = 0
         first_line = ""
-        for line in lines:
+        for i, line in enumerate(lines, 1):        # i 从 1 开始计行号
             hits = line.lower().count(kw)
             if hits > 0:
                 count += hits
                 if not first_line:
-                    first_line = line.strip()
+                    first_line = f"第{i}行: {line.strip()}"
+
 
         if count > 0:
             results.append((count, record["path"], first_line))
@@ -111,9 +115,9 @@ def search(keyword):
         return
 
     for count, path, first_line in results:
-        print(f"{path}: {count} 次")
+        print(f"{(root/path).as_posix()}: {count} ")
         if first_line:
-            print(f"  首次出现：{first_line}")
+            print(f"  {first_line}")
 
 
 def main():
@@ -122,6 +126,8 @@ def main():
 
     index_parser = sub.add_parser("index", help="为指定目录建索引")
     index_parser.add_argument("directory", help="目标目录，如 docs/")
+    index_parser.add_argument("--top", type=int, default=5, help="选择前几个高频词")
+    index_parser.add_argument("--json", action="store_true", help="以 JSON 格式输出")
 
     search_parser = sub.add_parser("search", help="在索引中搜索关键词")
     search_parser.add_argument("keyword", help="关键词，如 python")
@@ -130,7 +136,7 @@ def main():
 
     if args.command == "index":
         paths = iter_files(args.directory)
-        build_index(args.directory, paths)
+        build_index(args.directory, args.top, args.json, paths)
     elif args.command == "search":
         search(args.keyword)
 
